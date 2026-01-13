@@ -1,0 +1,14 @@
+# Core Testing Framework
+pytest==7.4.3
+pytest-html==4.1.1
+pytest-xdist==3.5.0
+
+# Selenium WebDriver
+selenium==4.15.2
+webdriver-manager==4.0.1
+
+# Reporting
+allure-pytest==2.13.2
+
+# Utilities
+python-dotenv==1.0.0
