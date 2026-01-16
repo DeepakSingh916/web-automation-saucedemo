@@ -14,14 +14,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "🔄 Checking out ${env.BRANCH_NAME} branch from repository..."
+                echo "Checking out ${env.BRANCH_NAME} branch from repository..."
                 checkout scm
             }
         }
 
         stage('Setup Python Environment') {
             steps {
-                echo '🐍 Setting up Python virtual environment...'
+                echo 'Setting up Python virtual environment...'
                 bat '''
                     python -m venv %VENV_DIR%
                     call %VENV_DIR%\\Scripts\\activate.bat
@@ -36,7 +36,7 @@ pipeline {
                 branch 'dev'
             }
             steps {
-                echo "🧪 Running tests on DEV branch with ${params.BROWSER} browser"
+                echo "Running tests on DEV branch with ${params.BROWSER} browser"
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pytest tests/ --browser=%BROWSER% --headless=%HEADLESS% -v --html=reports/report.html --self-contained-html
@@ -49,7 +49,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "🚀 Running FULL test suite on MAIN branch with ${params.BROWSER} browser"
+                echo "Running FULL test suite on MAIN branch with ${params.BROWSER} browser"
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pytest tests/ --browser=%BROWSER% --headless=%HEADLESS% -v --html=reports/report.html --self-contained-html
@@ -59,7 +59,7 @@ pipeline {
 
         stage('Publish HTML Report') {
             steps {
-                echo '📄 Publishing HTML report...'
+                echo 'Publishing HTML report...'
                 publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
@@ -87,15 +87,15 @@ pipeline {
         }
 
         success {
-            echo '✅ Test execution completed successfully!'
+            echo 'Test execution completed successfully!'
         }
 
         failure {
-            echo '❌ Test execution failed!'
+            echo 'Test execution failed!'
         }
 
         unstable {
-            echo '⚠️ Test execution unstable (some tests failed)'
+            echo 'Test execution unstable - some tests failed'
         }
     }
 }
