@@ -13,16 +13,10 @@ logger = logging.getLogger(__name__)
 def pytest_addoption(parser):
     """Add custom command line options"""
     parser.addoption(
-        "--browser",
-        action="store",
-        default="chrome",
-        help="Browser to run tests: chrome, firefox, edge"
-    )
-    parser.addoption(
         "--headless",
-        action="store",
-        default="false",
-        help="Run browser in headless mode: true or false"
+        action="store_true",
+        default=False,
+        help="Run browser in headless mode"
     )
 
 
@@ -37,13 +31,12 @@ def driver(request):
     Yields:
         WebDriver: Browser driver instance
     """
-    # Get command line options
-    browser = request.config.getoption("--browser")
-    headless = request.config.getoption("--headless").lower() == "true"
+    # Get headless option
+    headless = request.config.getoption("--headless")
 
-    # Create driver
-    logger.info(f"Setting up {browser} driver (headless: {headless})")
-    driver = DriverFactory.get_driver(browser=browser, headless=headless)
+    # Create driver (Chrome only)
+    logger.info(f"Setting up chrome driver (headless: {headless})")
+    driver = DriverFactory.get_driver(browser="chrome", headless=headless)
 
     # Navigate to base URL
     driver.get(BASE_URL)
