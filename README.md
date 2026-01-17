@@ -84,43 +84,82 @@ pip install -r requirements.txt
 
 ## ▶️ Running Tests Locally
 
-### Option 1: Normal Mode (Chrome Visible)
+> **📖 For comprehensive command reference, see:**
+> - **[PYTEST_COMMANDS.md](PYTEST_COMMANDS.md)** - Complete command guide with all options
+> - **[COMMAND_CHEATSHEET.txt](COMMAND_CHEATSHEET.txt)** - Quick reference cheat sheet
+
+### Understanding Test Modes
+
+| Mode | Flag | Behavior |
+|------|------|----------|
+| **Normal Mode** | No flag | Browser visible (default) |
+| **Headless Mode** | `--headless` | Browser hidden |
+
+### Quick Start Commands
+
+**All Tests:**
 ```bash
-# Run all tests with Chrome UI visible
+# Normal mode (browser visible)
 pytest tests/ -v
 
-# Run specific test file
+# Headless mode (browser hidden)
+pytest tests/ -v --headless
+```
+
+**Specific Test File:**
+```bash
+# Normal mode
 pytest tests/test_login.py -v
 
-# Run with HTML report
-pytest tests/ -v --html=reports/report.html --self-contained-html
-```
-
-### Option 2: Headless Mode (No Chrome UI)
-```bash
-# Run all tests in headless mode (faster, no browser window)
-pytest tests/ -v --headless
-
-# Run specific test in headless mode
+# Headless mode
 pytest tests/test_login.py -v --headless
-
-# Generate HTML report in headless mode
-pytest tests/ -v --headless --html=reports/report.html --self-contained-html
 ```
 
-### Quick Test Commands
+**Specific Test Case:**
 ```bash
-# Single test - visible Chrome
+# Normal mode
 pytest tests/test_login.py::TestLogin::test_valid_login -v
 
-# All login tests - headless
+# Headless mode
+pytest tests/test_login.py::TestLogin::test_valid_login -v --headless
+```
+
+### Report Generation
+
+Reports are automatically generated (configured in `pytest.ini`):
+- **HTML Report:** `reports/report.html`
+- **Allure Results:** `reports/allure-results/`
+
+**Custom report names:**
+```bash
+# Custom HTML report
+pytest tests/ -v --html=reports/custom_name.html --self-contained-html
+
+# Custom Allure location
+pytest tests/ -v --alluredir=allure-results --clean-alluredir
+```
+
+**View Allure Report:**
+```bash
+allure serve reports/allure-results
+# or
+allure serve allure-results
+```
+
+### Common Scenarios
+
+```bash
+# Quick smoke test (login tests only, headless)
 pytest tests/test_login.py -v --headless
 
-# All tests - visible Chrome with report
-pytest tests/ -v --html=reports/report.html --self-contained-html
+# Debug specific test (normal mode, see output)
+pytest tests/test_checkout.py::TestCheckout::test_complete_checkout_flow -v -s
 
-# Fast full test - headless with report
-pytest tests/ -v --headless --html=reports/report.html --self-contained-html
+# Full regression (parallel execution, headless)
+pytest tests/ -v --headless -n 4
+
+# Stop on first failure
+pytest tests/ -v --headless -x
 ```
 
 ## 🔧 Jenkins CI/CD Integration
@@ -394,3 +433,61 @@ pytest tests/ -v --headless         # Headless mode
 ```
 
 **Perfect for interviews - demonstrates production-ready automation skills!** 🚀
+
+## 📋 Command Reference Documentation
+
+For complete command reference with all options and examples:
+- **[PYTEST_COMMANDS.md](PYTEST_COMMANDS.md)** - Detailed command guide
+- **[COMMAND_CHEATSHEET.txt](COMMAND_CHEATSHEET.txt)** - Quick reference cheat sheet
+
+## 📊 Report Generation
+
+### Automatic Reports (via pytest.ini)
+
+Both HTML and Allure reports are automatically generated for every test run:
+
+| Report Type | Location | Features |
+|-------------|----------|----------|
+| **HTML** | `reports/report.html` | Self-contained, no dependencies |
+| **Allure** | `reports/allure-results/` | Rich UI, trends, history |
+
+### Viewing Reports
+
+**HTML Report:**
+```bash
+# Windows
+start reports\report.html
+
+# Mac
+open reports/report.html
+
+# Linux
+xdg-open reports/report.html
+```
+
+**Allure Report:**
+```bash
+# Auto-opens in browser
+allure serve reports/allure-results
+```
+
+### Installing Allure CLI (Optional)
+
+```bash
+# Using npm (recommended)
+npm install -g allure-commandline
+
+# Using scoop (Windows)
+scoop install allure
+
+# Verify installation
+allure --version
+```
+
+### Jenkins Reports
+
+When running in Jenkins:
+- **HTML Report:** Available via "Test Report" link
+- **Allure Report:** Available via "Allure Report" link (requires Allure Jenkins Plugin)
+
+Both reports are published automatically after each build.
