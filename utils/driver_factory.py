@@ -2,9 +2,11 @@
 WebDriver Factory - Manages browser driver creation and configuration
 """
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.service import Service as ChromeService, Service
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.chrome import ChromeDriverManager
+
 from config.browser_config import *
 from config.config import IMPLICIT_WAIT, PAGE_LOAD_TIMEOUT, PROJECT_ROOT
 import logging
@@ -54,49 +56,81 @@ class DriverFactory:
         return driver
 
     @staticmethod
-    def _get_chrome_driver(headless):
-        """Create Chrome driver"""
+    def _get_chrome_driver(headless: bool = False) -> webdriver.Chrome:
+        """
+        Initialize Chrome WebDriver with ChromeDriverManager
+
+        Args:
+            headless: Whether to run in headless mode
+
+        Returns:
+            Chrome WebDriver instance
+        """
         options = webdriver.ChromeOptions()
 
-        # Apply chrome options
-        if headless or CHROME_OPTIONS["headless"]:
-            options.add_argument("--headless=new")
-            options.add_argument("--window-size=1920,1080")
+        # Performance options
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
 
-        if CHROME_OPTIONS["disable_notifications"]:
-            options.add_argument("--disable-notifications")
+        # ✅ CRITICAL: Use incognito mode - NO saved passwords, NO popups!
+        options.add_argument("--incognito")
 
-        if CHROME_OPTIONS["disable_gpu"]:
-            options.add_argument("--disable-gpu")
+        # Disable ALL password/credential features
+        options.add_experimental_option("prefs", {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.default_content_setting_values.notifications": 2,
+            "profile.default_content_settings.popups": 0,
+            "autofill.profile_enabled": False
+        })
 
-        if CHROME_OPTIONS["no_sandbox"]:
-            options.add_argument("--no-sandbox")
+        # Disable automation flags
+        options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
+        options.add_experimental_option("useAutomationExtension", False)
 
-        if CHROME_OPTIONS["disable_dev_shm_usage"]:
-            options.add_argument("--disable-dev-shm-usage")
+        # Disable save password prompts
+        options.add_argument("--disable-blink-features=AutomationControlled")
 
-        # Additional arguments
-        for arg in CHROME_OPTIONS["arguments"]:
-            options.add_argument(arg)
+        if headless:
+            options.add_argument("--headless")
+            options.add_argument("--disable-extensions")
 
-        # Exclude automation switches
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
+        try:
+            # First try local driver
+            local_driver_path = os.path.join(
+                os.path.dirname(os.path.dirname(__file__)),
+                'drivers',
+                'chromedriver.exe'
+            )
 
-        # Use local chromedriver from project folder
-        chromedriver_path = os.path.join(PROJECT_ROOT, "drivers", "chromedriver.exe")
-        
-        if os.path.exists(chromedriver_path):
-            logger.info(f"Using local ChromeDriver: {chromedriver_path}")
-            service = ChromeService(executable_path=chromedriver_path)
-        else:
-            # Fallback to webdriver-manager if local driver not found
-            logger.warning(f"Local ChromeDriver not found at {chromedriver_path}, using webdriver-manager")
-            from webdriver_manager.chrome import ChromeDriverManager
-            service = ChromeService(ChromeDriverManager().install())
-        
-        driver = webdriver.Chrome(service=service, options=options)
-        return driver
+            if os.path.exists(local_driver_path):
+                logger.info(f"Using local ChromeDriver: {local_driver_path}")
+                service = Service(local_driver_path)
+            else:
+                logger.warning(f"Local ChromeDriver not found at {local_driver_path}, using webdriver-manager")
+
+                # Get chromedriver path from manager
+                driver_path = ChromeDriverManager().install()
+
+                # Fix: WebDriver Manager may return wrong file
+                driver_dir = os.path.dirname(driver_path)
+                if not driver_path.endswith('chromedriver.exe'):
+                    actual_driver = os.path.join(driver_dir, 'chromedriver.exe')
+                    if os.path.exists(actual_driver):
+                        driver_path = actual_driver
+                        logger.info(f"Fixed driver path to: {driver_path}")
+
+                service = Service(driver_path)
+
+            driver = webdriver.Chrome(service=service, options=options)
+            logger.info("Chrome driver initialized successfully")
+            return driver
+
+        except Exception as e:
+            logger.error(f"Failed to initialize Chrome driver: {str(e)}")
+            raise
 
     @staticmethod
     def _get_firefox_driver(headless):
