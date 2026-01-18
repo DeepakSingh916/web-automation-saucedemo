@@ -490,4 +490,4 @@ When running in Jenkins:
 - **HTML Report:** Available via "Test Report" link
 - **Allure Report:** Available via "Allure Report" link (requires Allure Jenkins Plugin)
 
-Both reports are published automatically after each build.
+Both reports are published automatically after each builds.
