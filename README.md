@@ -491,3 +491,4 @@ When running in Jenkins:
 - **Allure Report:** Available via "Allure Report" link (requires Allure Jenkins Plugin)
 
 Both reports are published automatically after each builds.
+=================================================================
