@@ -380,6 +380,6 @@ pytest tests/FILE.py::CLASS::METHOD -v [--headless] [--html=reports/NAME.html --
 ## Support
 
 For issues or questions:
-- Check [README.md](README.md) for framework overview
+- Check [README.md](../README.md) for framework overview
 - Check [SETUP_GUIDE.md](SETUP_GUIDE.md) for setup instructions
 - Report issues on GitHub

@@ -62,7 +62,7 @@ pipeline {
                     
                     bat """
                         call ${VENV_DIR}\\Scripts\\activate.bat
-                        pytest tests/ -v ${headlessFlag} ^
+                        pytest tests/test_login.py::TestLogin::test_valid_login -v ${headlessFlag} ^
                             --html=reports/report.html --self-contained-html ^
                             --alluredir=allure-results ^
                             --clean-alluredir

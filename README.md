@@ -85,8 +85,8 @@ pip install -r requirements.txt
 ## ▶️ Running Tests Locally
 
 > **📖 For comprehensive command reference, see:**
-> - **[PYTEST_COMMANDS.md](PYTEST_COMMANDS.md)** - Complete command guide with all options
-> - **[COMMAND_CHEATSHEET.txt](COMMAND_CHEATSHEET.txt)** - Quick reference cheat sheet
+> - **[PYTEST_COMMANDS.md](docs/PYTEST_COMMANDS.md)** - Complete command guide with all options
+> - **[COMMAND_CHEATSHEET.txt](docs/COMMAND_CHEATSHEET.txt)** - Quick reference cheat sheet
 
 ### Understanding Test Modes
 
@@ -437,8 +437,8 @@ pytest tests/ -v --headless         # Headless mode
 ## 📋 Command Reference Documentation
 
 For complete command reference with all options and examples:
-- **[PYTEST_COMMANDS.md](PYTEST_COMMANDS.md)** - Detailed command guide
-- **[COMMAND_CHEATSHEET.txt](COMMAND_CHEATSHEET.txt)** - Quick reference cheat sheet
+- **[PYTEST_COMMANDS.md](docs/PYTEST_COMMANDS.md)** - Detailed command guide
+- **[COMMAND_CHEATSHEET.txt](docs/COMMAND_CHEATSHEET.txt)** - Quick reference cheat sheet
 
 ## 📊 Report Generation
 

@@ -235,4 +235,4 @@ test_checkout.py       → 7 tests  (Checkout process)
 -l              Show local variables on failure
 --headless      Run in headless mode (browser hidden)
 
-═══════════════════════════════════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════════════════════════════
